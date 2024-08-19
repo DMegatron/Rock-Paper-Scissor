@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Rock Paper Scissor
+        </title>
+
+
+        <style>
+            body {
+            box-sizing: border-box;
+            background-color: rgb(36, 36, 36);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            user-select: none;
+        }
+        .game {
+            text-align: center;
+        }
+        .moves button {
+            font-size: 50px;
+            border-radius: 100%;
+            margin: 10px;
+            margin-top: 30px;
+            padding: 20px;
+        }
+        .move, .result, .score {
+            font-size: 25px;
+            margin-top: 30px;
+        }
+        .reset, .auto-play, .stop-auto-play {
+            font-size: 20px;
+        }
+        </style>
+
+    </head>
+    <body>
+        <div class="game">
+            <div>
+                <h1>ROCK PAPER SCISSOR</h1>
+            </div>
+            <div>
+                <p class="moves">
+                    <button onclick="gamePlay('✊');">✊</button>
+                    <button onclick="gamePlay('🖐️');">🖐️</button>
+                    <button onclick="gamePlay('✌️');">✌️</button>
+                </p>
+            </div>
+            <div>
+                <p class="move">
+                    You:   ||   Computer:
+                    <!-- <p>You-</p>
+                    <p class="player"></p>
+                    <p>Computer-</p>
+                    <p class="comp"></p> -->
+                </p>
+            </div>
+            
+            <div>
+                <p class="result"></p>
+            </div>
+            
+            <div>
+                <p class="score">
+                    <!-- <p>Win</p>
+                    <p class="win"></p>
+                    <p>Loss</p>
+                    <p class="loss"></p>
+                    <p>Tie</p>
+                    <p class="tie"></p> -->
+                </p>
+            </div>
+            
+            <div>
+                <button class="reset" onclick="reset();">Reset</button>
+                <button class="auto-play" onclick="autoPlay();">Auto Play</button>
+                <button class="stop-auto-play" onclick="stopAutoPlay();">Stop Autoplay</button>
+            </div>
+        </div>
+            
+            <script>
+
+            let score = JSON.parse(localStorage.getItem('score'));
+
+            if(score === null){
+                score = {
+                player: 0,
+                comp: 0,
+                tie: 0
+            };
+            }
+
+            document.querySelector('.score').innerText = `Win: ${score.player} Loss: ${score.comp} Tie: ${score.tie}`;
+            // document.querySelector('.win').innerText = score.player;
+            // document.querySelector('.loss').innerText = score.comp;
+            // document.querySelector('.tie').innerText = score.tie;
+
+            function gamePlay(playerMove){
+                let compMove = '';
+                compMove = ChooseCompMove();
+
+                document.querySelector('.move').innerHTML = `You: ${playerMove}   ||   Computer: ${compMove}`;
+                // document.querySelector('.player').innerHTML = playerMove;
+                // document.querySelector('.comp').innerHTML = compMove;
+                console.log(compMove);
+                let result = '';
+                if(playerMove === '✊'){
+                    if(compMove === '🖐️'){
+                        result = 'You lost'
+                    }
+                    else if(compMove === '✌️'){
+                        result = 'You won'
+                    }
+                    else{
+                        result = 'Tie'
+                    }
+                }
+                else if(playerMove === '🖐️'){
+                    if(compMove === '🖐️'){
+                        result = 'Tie'
+                    }
+                    else if(compMove === '✌️'){
+                        result = 'You lost'
+                    }
+                    else{
+                        result = 'You won'
+                    }
+                }
+                else{
+                    if(compMove === '🖐️'){
+                        result = 'You won'
+                    }
+                    else if(compMove === '✌️'){
+                        result = 'Tie'
+                    }
+                    else{
+                        result = 'You lost'
+                    }
+                }
+                if(result === 'You won'){
+                    score.player++;
+                }
+                else if(result === 'You lost'){
+                    score.comp++;
+                }
+                else{
+                    score.tie++;
+                }
+
+                localStorage.setItem('score', JSON.stringify(score));
+
+                document.querySelector('.result').innerText = result;
+
+                document.querySelector('.score').innerText = `Win: ${score.player} Loss: ${score.comp} Tie: ${score.tie}`;
+                // document.querySelector('.win').innerText = score.player;
+                // document.querySelector('.loss').innerText = score.comp;
+                // document.querySelector('.tie').innerText = score.tie;
+            }
+
+            function ChooseCompMove(){
+                let move = Math.random();
+                if(move >= 0 && move < 1/3)
+                return '✊';
+                else if(move >= 1/3 && move < 2/3)
+                return '🖐️'
+                else
+                return '✌️'
+            }
+
+            function ChoosePlayerMove(){
+                let move = Math.random();
+                if(move >= 0 && move < 1/3)
+                return '✊';
+                else if(move >= 1/3 && move < 2/3)
+                return '🖐️'
+                else
+                return '✌️'
+            }
+
+            function reset(){
+                localStorage.removeItem('score');
+                score = {
+                player: 0,
+                comp: 0,
+                tie: 0
+            };
+
+                document.querySelector('.move').innerHTML = `You:   ||   Computer:`;
+                // document.querySelector('.player').innerHTML = '';
+                // document.querySelector('.comp').innerHTML = '';
+                document.querySelector('.result').innerText = '';
+                document.querySelector('.score').innerText = `Win: ${score.player} Loss: ${score.comp} Tie: ${score.tie}`;
+                // document.querySelector('.win').innerText = score.player;
+                // document.querySelector('.loss').innerText = score.comp;
+                // document.querySelector('.tie').innerText = score.tie;
+            }
+
+            let intervalId;
+
+            function autoPlay(){
+                intervalId = setInterval(function(){  //Executes the function after the delay, then keeps executing after that delay
+                    gamePlay(ChoosePlayerMove());
+                }, 500);
+            }
+
+            function stopAutoPlay(){
+                clearInterval(intervalId);
+            }
+
+        </script>
+    </body>
+</html>
